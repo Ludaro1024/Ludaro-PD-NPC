@@ -57,6 +57,7 @@ function functions_selectPed()
                 dist = #(GetEntityCoords(markernpc) - GetEntityCoords(PlayerPedId()))
                 if dist >= 10.0 or IsEntityDead(markernpc) then
                     functions_disableMarker()
+                    _menuPool:CloseAllMenus()
                     functions_resetNPC(markernpc)
                 end
             end
@@ -104,3 +105,41 @@ function ShowSubTitle(msg, time)
     AddTextComponentSubstringPlayerName(msg)
     EndTextCommandPrint(time, 1)
 end
+
+function functions_GetNearestNPC()
+    local playerPed = PlayerPedId()
+    local playerPos = GetEntityCoords(playerPed)
+    local closestPed = nil
+    local minDistance = math.huge
+
+    for ped in functions_enumaratePeds() do
+        if ped ~= playerPed and IsPedHuman(ped) and not IsPedAPlayer(ped) and not IsEntityDead(ped) then
+            local pedPos = GetEntityCoords(ped)
+            local dist = #(playerPos - pedPos)
+
+            if dist < minDistance then
+                minDistance = dist
+                closestPed = ped
+            end
+        end
+    end
+
+    return closestPed, minDistance
+end
+
+function GivePedToJail(ped, reward)
+    functions_disableMarker()
+    DeletePed(ped)
+    isfaulty = callbacks_isPedFaulty(ped)
+    if isfaulty then
+        shared_Notify(functions_Locale("ped_jailed_faulty"))
+    else
+        shared_Notify(functions_Locale("ped_jailed_reward", reward))
+    end
+end
+
+RegisterNetEvent("baseevents:leftVehicle", function(currentVehicle, currentSeat, vehicleDisplayName, vehicleNetId)
+    if GetVehiclePedIsIn(functions_getMarkerPed(), false) == currentVehicle then
+        TaskLeaveVehicle(functions_getMarkerPed(), currentVehicle, 16)
+    end
+end)

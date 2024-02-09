@@ -35,6 +35,7 @@ function mergeTable(t1, t2)
         end
     end
 end
+
 function mergeTable2(destination, source)
     for key, value in pairs(source) do
         if type(value) == "table" and type(destination[key]) == "table" then
@@ -59,10 +60,34 @@ function server_functions_setNPCLicenses(ped, licenses)
     end
 end
 
+function server_functions_setNPCWeapons(ped, weapons)
+    local oldweapons = server_functions_getNPCWeapons(ped)
+    if isTableEmpty(oldweapons) then
+        Entity(ped).state.weapons = weapons
+    else
+        mergeTable(oldweapons, weapons)
+        Entity(ped).state.weapons = oldweapons
+    end
+end
+
+function server_functions_setNPCItems(ped, items)
+    local olditems = server_functions_getNPCItems(ped)
+    if isTableEmpty(olditems) then
+        numberofitems = math.random(10)
+        for i = 1, numberofitems do
+            table.insert(items, pickrandomitem())
+        end
+        Entity(ped).state.items = items
+    else
+        mergeTable(olditems, items)
+        Entity(ped).state.items = olditems
+    end
+end
+
 local defaultillegaldata = { alcohol = 0, drugs = 0, weapons = {}, items = {} }
 
 function server_functions_setIllegalData(ped, licenses)
-    local olddata = server_function_getIllegalNPCData(ped) 
+    local olddata = server_function_getIllegalNPCData(ped)
 
     if isTableEmpty(olddata) then
         Entity(ped).state.illegal = defaultillegaldata
@@ -71,6 +96,7 @@ function server_functions_setIllegalData(ped, licenses)
         Entity(ped).state.illegal = olddata
     end
 end
+
 function server_functions_getNPCLicenses(ped)
     return Entity(ped).state.licenses or nil
 end
@@ -89,4 +115,12 @@ end
 
 function server_functions_getNPCJob(ped)
     return Entity(ped).state.job or nil
+end
+
+function server_functions_getNPCWeapons(ped)
+    return Entity(ped).state.weapons or {}
+end
+
+function server_functions_getNPCItems(ped)
+    return Entity(ped).state.items or {}
 end

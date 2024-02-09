@@ -29,15 +29,17 @@ for k, v in pairs(Config.PliceStations) do
                     v.jail.marker.scale.x, v.jail.marker.scale.y, v.jail.marker.scale.z, v.jail.marker.color.r,
                     v.jail.marker.color.g, v.jail.marker.color.b, v.jail.marker.color.a, 0, 0, 0, 0)
                 if distance < 1.5 then
-                shared_ShowHelpNotify(functions_Locale("press_to_jail"), 0)
+                    shared_ShowHelpNotify(functions_Locale("press_to_jail"), 0)
                     if IsControlJustPressed(0, 38) then
-                        TriggerServerEvent("police:checkjail")
+                        nearestnpc = functions_GetNearestNPC()
+                        if nearestnpc then
+                            GivePedToJail(functions_GetNearestNPC(), v.jail.reward)
+                        else
+                            shared_Notify(functions_Locale("no_npc"))
+                        end
                     end
-
                 end
             end
         end
     end) -- use ox lib zones maybe.. later
-
-
 end

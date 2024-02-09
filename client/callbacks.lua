@@ -33,3 +33,18 @@ function callbacks_getPedData(ped)
     end
     return name, age, gender, job, licenses
 end
+
+function callbacks_isPedFaulty(ped)
+    local illegaldata = lib.callback.await("ludaro-pd-npc:getIllegalNPCData", false, ped)
+    return illegaldata
+end
+
+function callbacks_getPedItems(ped)
+    local items = lib.callback.await("ludaro-pd-npc:getNPCItems", false, ped)
+    return items
+end
+
+function callbacks_getPedWeapons(ped)
+    local weapons = lib.callback.await("ludaro-pd-npc:getNPCWeapons", false, ped)
+    return weapons
+end

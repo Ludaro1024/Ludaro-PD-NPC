@@ -110,6 +110,7 @@ function selectmenu_OpenSelectMenu(ped, vehicle)
 
 
 
+
         cuff:AddItem(cuffhard)
         cuff:AddItem(cuffsoft)
         cuff:AddItem(uncuff)
@@ -128,7 +129,10 @@ function selectmenu_OpenSelectMenu(ped, vehicle)
 
 
 
-
+        deletemarker = NativeUI.CreateItem(functions_Locale("deletemarker"), "")
+        deletemarker.Activated = function(sender, item)
+            functions_disableMarker()
+        end
         nativeui_RefreshIndex()
     else
         shared_Notify(functions_Locale("ped_not_exist"))

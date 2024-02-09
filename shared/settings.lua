@@ -25,3 +25,13 @@ Config.PoliceStations = {
 
     }
 }
+
+
+Config.IllegalItems = { "weed", "meth" }
+
+Config.IllegalWeapons = { "WEAPON_PISTOL" }
+
+Config.Licenses = {
+    ["weapon"] = "weapon",
+    ["driver"] = "driver"
+}
