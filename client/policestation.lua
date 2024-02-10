@@ -35,7 +35,7 @@ for k, v in pairs(Config.PoliceStations) do
                     if IsControlJustPressed(0, 38) then
                         missionnpc = functions_getMarkerPed()
                         if missionnpc and DoesEntityExist(missionnpc) then
-                            GivePedToJail(missionnpc, v.jail.reward, v.jail.penalty)
+                            functions_givePedToJail(missionnpc, v.jail.reward, v.jail.penalty)
                         else
                             shared_Notify(functions_Locale("ped_not_exist"))
                         end

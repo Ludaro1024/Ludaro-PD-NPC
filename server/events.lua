@@ -33,3 +33,9 @@ AddEventHandler("ludaro-pd-npc:penalty", function(penalty)
     xPlayer = ESX.GetPlayerFromId(source)
     xPlayer.removeMoney(penalty)
 end)
+
+
+RegisterServerEvent("ludaro-pd-npc:setduty")
+AddEventHandler("ludaro-pd-npc:setduty", function()
+    server_duty_SetDuty(source)
+end)

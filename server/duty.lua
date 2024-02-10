@@ -28,6 +28,6 @@ function server_duty_GetDuty(source)
     return shared_Server_GetDuty(source) or shared_Server_SetDuty(source, false)
 end
 
-RegisterCommand('ludaro-pd-npc:onduty', function(source, args, rawCommand)
-    server_duty_SetDuty(source)
-end, false)
+-- RegisterCommand(Config.Commands.ChangeDuty, function(source, args, rawCommand)
+--     server_duty_SetDuty(source)
+-- end, false)

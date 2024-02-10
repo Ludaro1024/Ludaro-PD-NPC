@@ -2,8 +2,14 @@ function functions_IsPedAnPedestrian(ped)
     return IsPedHuman(ped)
 end
 
-function functions_Locale(msg)
-    return Config.Locales[Config.Locale][msg] or msg
+function functions_Locale(msg, variable)
+    if variable then
+        configvariable = Config.Locales[Config.Locale][msg]
+        msg = string.format(configvariable, variable)
+        return msg
+    else
+        return Config.Locales[Config.Locale][msg] or msg
+    end
 end
 
 function functions_LoadModel(model)
@@ -103,14 +109,14 @@ function functions_cleanupPed(ped)
     end
 end
 
-function ShowSubTitle(msg, time)
+function functions_showSubTitle(msg, time)
     ClearPrints()
     BeginTextCommandPrint("STRING")
     AddTextComponentSubstringPlayerName(msg)
     EndTextCommandPrint(time, 1)
 end
 
-function functions_GetNearestNPC()
+function functions_getNearestNPC()
     local playerPed = PlayerPedId()
     local playerPos = GetEntityCoords(playerPed)
     local closestPed = nil
@@ -131,7 +137,7 @@ function functions_GetNearestNPC()
     return closestPed, minDistance
 end
 
-function GivePedToJail(ped, reward, penalty)
+function functions_givePedToJail(ped, reward, penalty)
     netId = NetworkGetNetworkIdFromEntity(ped)
     name, age, gender, job, licenses, items, weapons, illegalstuff = callbacks_getPedData(netId) -- was to tired to create a new callback, will fix this later, sorry
     if #illegalstuff.weapons or #illegalstuff.items >= 1 then
@@ -149,3 +155,9 @@ function GivePedToJail(ped, reward, penalty)
         DeletePed(ped)
     end -- add cooldown
 end
+
+RegisterCommand(Config.Commands.ChangeDuty, function(source, args, rawCommand)
+    TriggerServerEvent("ludaro-pd-npc:setduty")
+end, false)
+RegisterKeyMapping(Config.Commands.ChangeDuty, functions_Locale("keymap_duty"), "keyboard",
+    Config.Controls.ChangeDuty)

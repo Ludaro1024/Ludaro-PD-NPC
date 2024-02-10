@@ -7,8 +7,9 @@ Config.Commands = {
     OpenInteractionMenu = "ludaro-pd-npc:openmenu",
     ChangeDuty = "ludaro-pd-npc:onduty",
 }
-Config.Controls {
-    SelectPed = 38, -- E
-    OpenMenu = "U", -- U
-    ChangeDuty = "O", -- F5
+
+Config.Controls = {
+    SelectPed = 38,             -- E
+    OpenInteractionsMenu = "U", -- U
+    ChangeDuty = "O",           -- F5
 }

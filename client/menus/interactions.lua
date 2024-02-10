@@ -38,6 +38,13 @@ function selectmenu_OpenSelectMenu(ped, vehicle)
         nameitem = NativeUI.CreateItem(functions_Locale("name"), "")
         nameitem:RightLabel(name)
         genderitem = NativeUI.CreateItem(functions_Locale("gender"), "")
+        if IsPedMale(ped) then
+            gender = "♂️"
+        else
+            gender = "♀️"
+        end
+        print(gender)
+        print(IsPedMale(ped))
         genderitem:RightLabel(gender)
         ageitem = NativeUI.CreateItem(functions_Locale("age"), "")
         ageitem:RightLabel(age)
@@ -386,7 +393,9 @@ RegisterCommand(Config.Commands.OpenInteractionMenu, function(source, args, rawC
     selectmenu_OpenSelectMenu(nearestped, nil)
 end)
 
-RegisterKeyMapping(Config.Controls.OpenInteractionsMenu, functions_Locale("open_interactions_menu"), "keyboard", Config.Controls.OpenInteractionsMenu)
+RegisterKeyMapping(Config.Commands.OpenInteractionMenu, functions_Locale("open_interactions_menu"), "keyboard",
+    Config.Controls.OpenInteractionsMenu)
+
 
 
 function stopdrag()

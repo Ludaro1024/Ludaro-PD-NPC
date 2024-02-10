@@ -1,4 +1,4 @@
-Config.Locale = "de"
+Config.Locale = "en"
 Config.Locales = {
     ["en"] = {
         ["onduty"] = "You are now on duty",
@@ -26,6 +26,11 @@ Config.Locales = {
         ["weapons"] = "Weapons",
         ["open_interactions_menu"] = "Open NPC Interaction Menu on Selected NPC",
         ["keymap_duty"] = "Change in/out of Duty (NPC)",
+        ["selecting"] = "Selecting..",
+        ["ped_jailed_reward"] = "You have been rewarded with $%s",
+        ["ped_jailed_faulty"] = "You have been jailed for having illegal items",
+        ["legal"] = "Legal",
+        ["illegal"] = "Illegal",
     },
     ["de"] = {
         ["onduty"] = "Du bist jetzt im Dienst",
@@ -53,5 +58,10 @@ Config.Locales = {
         ["weapons"] = "Waffen",
         ["open_interactions_menu"] = "Öffne NPC Interaktionsmenü für ausgewählten NPC",
         ["keymap_duty"] = " IN/AUS Dienst wechseln (NPC)",
+        ["selecting"] = "Auswählen..",
+        ["ped_jailed_reward"] = "Du wurdest mit $%s belohnt",
+        ["ped_jailed_faulty"] = "Du wurdest verhaftet, weil du illegale Gegenstände besitzt",
+        ["legal"] = "Legal",
+        ["illegal"] = "Illegal",
     }
 }

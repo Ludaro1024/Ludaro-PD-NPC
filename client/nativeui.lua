@@ -72,9 +72,9 @@ local timerCompleted = false
 Citizen.CreateThread(function()
     while true do
         Wait(0)
-        if IsControlPressed(0, 38) and callbacks_isInDuty() then
+        if IsControlPressed(0, Config.Controls.SelectPed) and callbacks_isInDuty() then
             if timerbar == nil then
-                timerbar = nativeui_CreateTimerBar(0.5, "NPC Festhalten")
+                timerbar = nativeui_CreateTimerBar(0.5, functions_Locale('selecting'))
                 timerCompleted = false
             end
         else
