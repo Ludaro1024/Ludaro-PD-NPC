@@ -10,5 +10,5 @@ Config.Commands = {
 Config.Controls {
     SelectPed = 38, -- E
     OpenMenu = "U", -- U
-    ChangeDuty = 166, -- F5
+    ChangeDuty = "O", -- F5
 }
