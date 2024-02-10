@@ -15,9 +15,15 @@ Current Features:
 - Select NPCs for interaction
 - Toggle On/Off Duty status
 - Transport NPCs to Jail (if necessary)
+- Check if NPC has Illegal goods
+- Jail Peds with proper animation
+- Inventory and all Data from peds is in statebags so its automaticly synced between all cops
 
 Planned Features:
 
+- NPC Calls (+ Dispatch System)
 - Vehicle inspections
 - Player (real) checks
 - Dispatch calls for Officers
+- F6 menu
+- more.. :)

@@ -1,4 +1,3 @@
-Config = {}
 Config.Locale = "de"
 Config.Locales = {
     ["en"] = {
@@ -14,7 +13,19 @@ Config.Locales = {
         ["age"] = "Age",
         ["job"] = "Job",
         ["notknown"] = "Not known",
-        ["press_e_to_jail"] = "Press E To jail someone"
+        ["press_to_jail"] = "Press E To jail someone",
+        ["ped_needs_cuffed"] = "The person needs to be cuffed",
+        ["actions"] = "Actions",
+        ["movement"] = "Movement actions",
+        ["drag"] = "Drag person",
+        ["cuff"] = "Cuff person",
+        ["followme"] = "Tell person to follow",
+        ["putincar"] = "Put person in vehicle",
+        ["putoutcar"] = "Put person out of vehicle",
+        ["items"] = "Items",
+        ["weapons"] = "Weapons",
+        ["open_interactions_menu"] = "Open NPC Interaction Menu on Selected NPC",
+        ["keymap_duty"] = "Change in/out of Duty (NPC)",
     },
     ["de"] = {
         ["onduty"] = "Du bist jetzt im Dienst",
@@ -29,6 +40,18 @@ Config.Locales = {
         ["age"] = "Alter",
         ["job"] = "Job",
         ["notknown"] = "Unbekannt",
-        ["press_e_to_jail"] = "Drücke E um jemanden zu verhaften"
+        ["press_to_jail"] = "Drücke E um jemanden zu verhaften",
+        ["ped_needs_cuffed"] = "Die Person muss gefesselt sein",
+        ["actions"] = "Aktionen",
+        ["movement"] = "Bewegungs-Aktionen",
+        ["drag"] = "Person mitziehen",
+        ["cuff"] = "Person fesseln",
+        ["followme"] = "Person sagen zu folgen",
+        ["putincar"] = "Person in Fahrzeug befördern",
+        ["putoutcar"] = "Person aus Fahrzeug befördern",
+        ["items"] = "Gegenstände",
+        ["weapons"] = "Waffen",
+        ["open_interactions_menu"] = "Öffne NPC Interaktionsmenü für ausgewählten NPC",
+        ["keymap_duty"] = " IN/AUS Dienst wechseln (NPC)",
     }
 }

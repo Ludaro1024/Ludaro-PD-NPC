@@ -1,4 +1,4 @@
-for k, v in pairs(Config.PliceStations) do
+for k, v in pairs(Config.PoliceStations) do
     blip = AddBlipForCoord(v.coords.x, v.coords.y, v.coords.z)
     SetBlipSprite(blip, v.blip.id)
     SetBlipDisplay(blip, 4)
@@ -8,6 +8,8 @@ for k, v in pairs(Config.PliceStations) do
     BeginTextCommandSetBlipName("STRING")
     AddTextComponentString(v.blip.label or k)
     EndTextCommandSetBlipName(blip)
+
+
 
     jailblip = AddBlipForCoord(v.jail.coords.x, v.jail.coords.y, v.jail.coords.z)
     SetBlipSprite(jailblip, v.jail.blip.id)
@@ -31,11 +33,11 @@ for k, v in pairs(Config.PliceStations) do
                 if distance < 1.5 then
                     shared_ShowHelpNotify(functions_Locale("press_to_jail"), 0)
                     if IsControlJustPressed(0, 38) then
-                        nearestnpc = functions_GetNearestNPC()
-                        if nearestnpc then
-                            GivePedToJail(functions_GetNearestNPC(), v.jail.reward)
+                        missionnpc = functions_getMarkerPed()
+                        if missionnpc and DoesEntityExist(missionnpc) then
+                            GivePedToJail(missionnpc, v.jail.reward, v.jail.penalty)
                         else
-                            shared_Notify(functions_Locale("no_npc"))
+                            shared_Notify(functions_Locale("ped_not_exist"))
                         end
                     end
                 end

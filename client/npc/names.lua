@@ -33,7 +33,7 @@ end
 
 -- Function to return a random name
 function names_getRandomName(isFemale)
-    local nameList = isFemale and femaleNames or maleNames
+    local nameList = isFemale == 1 and femaleNames or maleNames
     local name = getRandomElement(nameList)
     local surname = getRandomElement(surnames)
     return name .. " " .. surname

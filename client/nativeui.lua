@@ -40,6 +40,7 @@ function nativeui_CreateTimerBar(seconds, name)
     function timerbar:Stop()
         isActive = false
         TerminateThread(thread)
+        Wait(1000)
     end
 
     function timerbar:Active()
@@ -73,7 +74,7 @@ Citizen.CreateThread(function()
         Wait(0)
         if IsControlPressed(0, 38) and callbacks_isInDuty() then
             if timerbar == nil then
-                timerbar = nativeui_CreateTimerBar(2, "NPC Festhalten")
+                timerbar = nativeui_CreateTimerBar(0.5, "NPC Festhalten")
                 timerCompleted = false
             end
         else
@@ -87,7 +88,7 @@ Citizen.CreateThread(function()
 
         if timerbar ~= nil then
             if not timerbar:Active() and not timerCompleted then
-                if timerbar:GetPercentage() >= 100 then
+                if timerbar:GetPercentage() >= 98 then
                     timerCompleted = true
                     functions_selectPed()
                 end

@@ -1,17 +1,34 @@
 function selectmenu_OpenSelectMenu(ped, vehicle)
-    if DoesEntityExist(ped) then
-        name, age, gender, job = callbacks_getPedData(ped)
+    if DoesEntityExist(ped) == 1 or DoesEntityExist(ped) == true then
+        playerPed = PlayerPedId()
+        netId = NetworkGetNetworkIdFromEntity(ped)
+        name, age, gender, job, licenses, items, weapons, illegalstuff = callbacks_getPedData(netId)
+
         playerPed = PlayerPedId()
         mainmenu = NativeUI.CreateMenu(functions_Locale("select_ped"), functions_Locale("select_ped_desc"))
-        PlayPedAmbientSpeechNative(ped, "GENERIC_HI", "SPEECH_PARAMS_FORCE")
-        TaskLookAtEntity(ped, playerPed, -1, 2048, 3)
-        TaskTurnPedToFaceEntity(ped, playerPed, -1)
-
-
-        mainmenu.OnMenuClosed = function(sender, item, index)
-            functions_cleanupPed(ped)
+        if cuffed == false then
+            PlayPedAmbientSpeechNative(ped, "GENERIC_HI", "SPEECH_PARAMS_FORCE")
+            TaskLookAtCoord(ped, GetEntityCoords(playerPed), 10000, 2048, 3)
+            TaskTurnPedToFaceCoord(ped, GetEntityCoords(playerPed), 10000)
+            TaskStandStill(ped, 10000)
         end
         _menuPool:Add(mainmenu)
+        _menuPool:RefreshIndex()
+        _menuPool:MouseControlsEnabled(false)
+        _menuPool:MouseEdgeEnabled(false)
+        _menuPool:ControlDisablingEnabled(false)
+        mainmenu:Visible(true)
+
+        mainmenu.OnMenuClosed = function(sender, item, index)
+            if cuffed == false then
+                PlayPedAmbientSpeechNative(ped, "GENERIC_BYE", "SPEECH_PARAMS_FORCE")
+                TaskTurnPedToFaceEntity(ped, playerPed, -1)
+                ClearPedTasksImmediately(ped)
+                ResetPedMovementClipset(ped, 0)
+                SetPedAsNoLongerNeeded(ped)
+                TaskWanderStandard(ped, 10.0, 10)
+            end
+        end
         nativeui_RefreshIndex()
 
         info = _menuPool:AddSubMenu(mainmenu, functions_Locale("info"))
@@ -47,10 +64,10 @@ function selectmenu_OpenSelectMenu(ped, vehicle)
             jobitem:SetRightLabel(job)
         end
 
-        info:AddItem(name)
-        info:AddItem(gender)
-        info:AddItem(age)
-        info:AddItem(job)
+        info.SubMenu:AddItem(nameitem)
+        info.SubMenu:AddItem(genderitem)
+        info.SubMenu:AddItem(ageitem)
+        info.SubMenu:AddItem(jobitem)
 
         -- talk = _menuPool:AddSubMenu(mainmenu, functions_Locale("talk"))
         -- talk.Item:RightLabel("→→")
@@ -74,6 +91,44 @@ function selectmenu_OpenSelectMenu(ped, vehicle)
 
 
 
+        inventory = _menuPool:AddSubMenu(mainmenu, functions_Locale("inventory"))
+        inventory.Item:RightLabel("→→")
+        nativeui_RefreshIndex()
+
+        itemsmenu = _menuPool:AddSubMenu(inventory.SubMenu, functions_Locale("items"))
+        itemsmenu.Item:RightLabel("→→")
+        nativeui_RefreshIndex()
+
+        weaponsmenu = _menuPool:AddSubMenu(inventory.SubMenu, functions_Locale("weapons"))
+        weaponsmenu.Item:RightLabel("→→")
+        nativeui_RefreshIndex()
+
+        for k, v in pairs(items) do
+            item = NativeUI.CreateItem(v.label, "")
+            itemsmenu.SubMenu:AddItem(item)
+            if Config.ShowIllegalItems then
+                if v.illegal then
+                    item:RightLabel("~r~" .. functions_Locale("illegal"))
+                else
+                    item:RightLabel("~g~" .. functions_Locale("legal"))
+                end
+            end
+        end
+
+        for k, v in pairs(weapons) do
+            if v.label and v.name then
+                weapon = NativeUI.CreateItem(v.label, "")
+                weaponsmenu.SubMenu:AddItem(weapon)
+                if Config.ShowIllegalWeapons then
+                    if v.illegal then
+                        weapon:RightLabel("~r~" .. functions_Locale("illegal"))
+                    else
+                        weapon:RightLabel("~g~" .. functions_Locale("legal"))
+                    end
+                end
+            end
+        end
+
 
 
 
@@ -93,31 +148,31 @@ function selectmenu_OpenSelectMenu(ped, vehicle)
             interactions_drag(ped)
         end
 
-        carry = NativeUI.CreateItem(functions_Locale("carry"), "")
-        carry.Activated = function(sender, item)
-            interaction_carry(ped)
+        -- carry = NativeUI.CreateItem(functions_Locale("carry"), "")
+        -- carry.Activated = function(sender, item)
+        --     interaction_carry(ped)
+        -- end
+
+        followme = NativeUI.CreateItem(functions_Locale("followme"), "")
+        followme.Activated = function(sender, item)
+            interactions_followme(ped)
         end
 
-        searchthrough = NativeUI.CreateItem(functions_Locale("searchthrough"), "")
-        searchthrough.Activated = function(sender, item)
-            interaction_searchthrough(ped)
-        end
 
         putincar = NativeUI.CreateItem(functions_Locale("putincar"), "")
         putincar.Activated = function(sender, item)
             interaction_putincar(ped)
         end
-
-
-
-
-        cuff:AddItem(cuffhard)
-        cuff:AddItem(cuffsoft)
-        cuff:AddItem(uncuff)
-        movement:AddItem(drag)
-        movement:AddItem(carry)
-        movement:AddItem(followme)
-        movement:AddItem(searchthrough)
+        putoutcar = NativeUI.CreateItem(functions_Locale("putoutcar"), "")
+        putoutcar.Activated = function(sender, item)
+            interaction_putoutcar(ped)
+        end
+        movement.SubMenu:AddItem(drag)
+        -- movement.SubMenu:AddItem(carry)
+        movement.SubMenu:AddItem(followme)
+        movement.SubMenu:AddItem(putincar)
+        movement.SubMenu:AddItem(putoutcar)
+        movement.SubMenu:AddItem(cuff)
 
 
 
@@ -140,10 +195,81 @@ function selectmenu_OpenSelectMenu(ped, vehicle)
     end
 end
 
+function interactions_searchthrough(ped, searchmenu)
+
+end
+
+function interaction_putoutcar(ped)
+    if IsPedInAnyVehicle(ped, false) then
+        FreezeEntityPosition(ped, false)
+        TaskLeaveVehicle(ped, GetVehiclePedIsIn(ped, false), 64)
+        repeat Wait(0) until not IsPedInAnyVehicle(ped, false)
+        FreezeEntityPosition(ped, true)
+    else
+        shared_Notify(functions_Locale("ped_not_in_vehicle"))
+    end
+end
+
+function loadanimdict(dict)
+    while not HasAnimDictLoaded(dict) do
+        RequestAnimDict(dict)
+        Citizen.Wait(5)
+    end
+end
+
+function cuffAnimation(ped)
+    Citizen.CreateThread(function()
+        playercoords = GetEntityCoords(PlayerPedId())
+        playerlocation = GetEntityForwardVector(PlayerPedId())
+        playerheading = GetEntityHeading(PlayerPedId())
+        local x, y, z = table.unpack(playercoords + playerlocation * 1.0)
+        SetEntityCoords(ped, x, y, z)
+        SetEntityHeading(ped, playerheading)
+        Citizen.Wait(250)
+        loadanimdict('mp_arrest_paired')
+        TaskPlayAnim(ped, 'mp_arrest_paired', 'crook_p2_back_right', 8.0, -8, 3750, 2, 0, 0, 0, 0)
+        Citizen.Wait(3760)
+        loadanimdict('mp_arresting')
+        TaskPlayAnim(ped, 'mp_arresting', 'idle', 8.0, -8, -1, 49, 0.0, false, false, false)
+        TaskStandStill(ped, 10000)
+        cuffed = true
+    end)
+    loadanimdict('mp_arrest_paired')
+    TaskPlayAnim(GetPlayerPed(-1), 'mp_arrest_paired', 'cop_p2_back_right', 8.0, -8, 3750, 2, 0, 0, 0, 0)
+    Citizen.Wait(3000)
+    SetCurrentPedWeapon(ped, GetHashKey('WEAPON_UNARMED'), true) -- unarm player
+end
+
+function uncuffAnimation(ped)
+    Citizen.CreateThread(function()
+        playercoords = GetEntityCoords(PlayerPedId())
+        playerlocation = GetEntityForwardVector(PlayerPedId())
+        playerheading = GetEntityHeading(PlayerPedId())
+        local x, y, z = table.unpack(playercoords + playerlocation * 1.0)
+        SetEntityCoords(ped, x, y, z)
+        SetEntityHeading(ped, playerheading)
+        Citizen.Wait(250)
+        loadanimdict('mp_arresting')
+        TaskPlayAnim(ped, 'mp_arresting', 'b_uncuff', 8.0, -8, -1, 2, 0, 0, 0, 0)
+        Citizen.Wait(5500)
+        cuffed = false
+        ClearPedTasks(ped)
+    end)
+    Citizen.Wait(250)
+    loadanimdict('mp_arresting')
+    TaskPlayAnim(PlayerPedId(), 'mp_arresting', 'a_uncuff', 8.0, -8, -1, 2, 0, 0, 0, 0)
+    Citizen.Wait(5500)
+    ClearPedTasks(PlayerPedId())
+end
+
 function interactions_cuff(ped)
     if not IsPedCuffed(ped) then
+        cuffAnimation(ped)
+        FreezeEntityPosition(ped, true)
         SetEnableHandcuffs(ped, true)
     else
+        uncuffAnimation(ped)
+        FreezeEntityPosition(ped, false)
         SetEnableHandcuffs(ped, false)
     end
 end
@@ -152,14 +278,20 @@ dragged = false
 
 function interactions_drag(ped)
     if not IsPedInAnyVehicle(ped, false) then
+        if not cuffed then
+            shared_Notify(functions_Locale("ped_needs_cuffed"))
+            return
+        end
         if not dragged then
+            FreezeEntityPosition(ped, false)
             dragged = true
-            TaskStartScenarioInPlace(PlayerPedId(), "CODE_HUMAN_MEDIC_TEND_TO_DEAD", 0, true)
-            AttachEntityToEntity(ped, PlayerPedId(), 0, 0, 0, 0, 0, 0, 0, false, false, false, false, 2, true)
+            AttachEntityToEntity(ped, PlayerPedId(), 11816, 0.54, 0.54, 0.0, 0.0, 0.0, 0.0, false, false, false, false,
+                2, true)
         else
             DetachEntity(ped, true, true)
             ClearPedTasks(PlayerPedId())
             dragged = false
+            FreezeEntityPosition(ped, true)
         end
     else
         shared_Notify(functions_Locale("ped_in_vehicle"))
@@ -167,6 +299,7 @@ function interactions_drag(ped)
 end
 
 function interactions_followme(ped)
+    FreezeEntityPosition(ped, false)
     if not IsPedInAnyVehicle(ped, false) then
         TaskFollowToOffsetOfEntity(ped, PlayerPedId(), 0, 0, 0, 5, -1, 0.5, 1, true)
     else
@@ -179,6 +312,7 @@ function interaction_putincar(ped)
         local vehicle = functions_GetClosestVehicle()
         if DoesEntityExist(vehicle) then
             local seat = GetEmptySeat(vehicle)
+            print(GetEmptySeat(vehicle))
             if seat ~= -1 then
                 if dragged then
                     DetachEntity(ped, true, true)
@@ -186,6 +320,9 @@ function interaction_putincar(ped)
                     dragged = false
                 end
                 TaskEnterVehicle(ped, vehicle, -1, seat, 1.0, 1, 0)
+                FreezeEntityPosition(ped, false)
+                repeat Wait(0) until IsPedInVehicle(ped, vehicle, false)
+                FreezeEntityPosition(ped, true)
             else
                 shared_Notify(functions_Locale("no_empty_seat"))
             end
@@ -198,12 +335,12 @@ function interaction_putincar(ped)
 end
 
 function GetEmptySeat(vehicle)
-    for i = -1, GetVehicleMaxNumberOfPassengers(vehicle) - 1 do
-        if IsVehicleSeatFree(vehicle, i) then
-            return i
-        end
-    end
-    return -1
+    -- for i = -1, GetVehicleMaxNumberOfPassengers(vehicle) - 1 do
+    --     if i ~= -1 and i ~= 0 and IsVehicleSeatFree(vehicle, i) then
+    --         return i
+    --     end
+    -- end
+    return math.random(2, 3)
 end
 
 function runAway(ped)
@@ -226,4 +363,35 @@ function functions_GetClosestVehicle()
         0)
     local _, _, _, _, vehicle = GetShapeTestResult(rayHandle)
     return vehicle
+end
+
+AddEventHandler('onResourceStop', function(resourceName)
+    if (GetCurrentResourceName() == resourceName) then
+        ped = functions_getMarkerPed()
+        if cuffed then
+            ClearPedTasksImmediately(ped)
+            loadanimdict('mp_arresting')
+            TaskPlayAnim(ped, 'mp_arresting', 'b_uncuff', 8.0, -8, -1, 2, 0, 0, 0, 0)
+            cuffed = false
+        end
+        if dragged then
+            interactions_drag(functions_getMarkerPed())
+        end
+        functions_disableMarker()
+    end
+end)
+
+RegisterCommand(Config.Commands.OpenInteractionMenu, function(source, args, rawCommand)
+    nearestped = functions_getMarkerPed()
+    selectmenu_OpenSelectMenu(nearestped, nil)
+end)
+
+RegisterKeyMapping(Config.Controls.OpenInteractionsMenu, functions_Locale("open_interactions_menu"), "keyboard", Config.Controls.OpenInteractionsMenu)
+
+
+function stopdrag()
+    DetachEntity(PlayerPedId(), true, true)
+    DetachEntity(dragstatus.ped, true, true)
+    dragstatus.ped = nil
+    dragstatus.isDragged = false
 end

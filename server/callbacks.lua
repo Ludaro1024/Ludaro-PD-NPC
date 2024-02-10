@@ -61,10 +61,14 @@ end)
 
 
 lib.callback.register('ludaro-pd-npc:getAllNPCData', function(source, ped, name)
+    ped = NetworkGetEntityFromNetworkId(ped)
     local name = server_functions_getNPCName(ped) or functions_Locale("notknown")
     local age = server_functions_getNPCAge(ped) or functions_Locale("notknown")
     local gender = server_functions_getNPCGender(ped) or functions_Locale("notknown")
     local job = server_functions_getNPCJob(ped) or functions_Locale("notknown")
-    local illegaldata = server_function_getIllegalNPCData(ped)
-    return name, age, gender, job, illegaldata
+    local licenses = server_functions_getNPCLicenses(ped) or functions_Locale("notknown")
+    local items = server_functions_getNPCItems(ped)
+    local weapons = server_functions_getNPCWeapons(ped)
+    local illegalstuff = server_function_getIllegalNPCData(ped)
+    return name, age, gender, job, licenses, items, weapons, illegalstuff
 end)

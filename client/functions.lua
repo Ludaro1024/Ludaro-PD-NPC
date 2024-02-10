@@ -2,6 +2,10 @@ function functions_IsPedAnPedestrian(ped)
     return IsPedHuman(ped)
 end
 
+function functions_Locale(msg)
+    return Config.Locales[Config.Locale][msg] or msg
+end
+
 function functions_LoadModel(model)
     while not HasModelLoaded(model) do
         RequestModel(model)
@@ -127,19 +131,21 @@ function functions_GetNearestNPC()
     return closestPed, minDistance
 end
 
-function GivePedToJail(ped, reward)
-    functions_disableMarker()
-    DeletePed(ped)
-    isfaulty = callbacks_isPedFaulty(ped)
-    if isfaulty then
+function GivePedToJail(ped, reward, penalty)
+    netId = NetworkGetNetworkIdFromEntity(ped)
+    name, age, gender, job, licenses, items, weapons, illegalstuff = callbacks_getPedData(netId) -- was to tired to create a new callback, will fix this later, sorry
+    if #illegalstuff.weapons or #illegalstuff.items >= 1 then
+        isfaulty = true
+    else
+        isfaulty = false
+    end
+    if isfaulty == false then
         shared_Notify(functions_Locale("ped_jailed_faulty"))
+        shared_Functions_Penalty(penalty)
     else
         shared_Notify(functions_Locale("ped_jailed_reward", reward))
-    end
+        shared_Functions_Reward(reward)
+        functions_disableMarker()
+        DeletePed(ped)
+    end -- add cooldown
 end
-
-RegisterNetEvent("baseevents:leftVehicle", function(currentVehicle, currentSeat, vehicleDisplayName, vehicleNetId)
-    if GetVehiclePedIsIn(functions_getMarkerPed(), false) == currentVehicle then
-        TaskLeaveVehicle(functions_getMarkerPed(), currentVehicle, 16)
-    end
-end)

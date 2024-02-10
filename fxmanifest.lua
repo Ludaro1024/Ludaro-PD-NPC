@@ -39,8 +39,6 @@ client_scripts {
     'NativeUILua/UITimerBar/items/UITimerBarItem.lua',
     'NativeUILua/UITimerBar/items/UITimerBarProgressItem.lua',
     'NativeUILua/UITimerBar/items/UITimerBarProgressWithIconItem.lua',
-    'NativeUILua/UIProgressBar/UIProgressBarPool.lua',
-    'NativeUILua/UIProgressBar/items/UIProgressBarItem.lua',
     "NativeUILua/NativeUI.lua",
     "client/*.lua",
     "client/menus/*.lua",
@@ -48,10 +46,11 @@ client_scripts {
 }
 
 server_scripts {
+    '@oxmysql/lib/MySQL.lua',
     "server/*.lua",
 }
 
 shared_scripts {
-    --'@ox_lib/init.lua',
+    '@ox_lib/init.lua',
     "shared/*.lua",
 }

@@ -77,7 +77,7 @@ local jobs = {
 }
 
 function getRandomJob()
-    math.randomseed(os.time())       
-    local index = math.random(#jobs) 
-    return jobs[index]               
+    math.randomseed(GetGameTimer())
+    local index = math.random(#jobs)
+    return jobs[index]
 end
