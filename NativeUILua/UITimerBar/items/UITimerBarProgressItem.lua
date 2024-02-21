@@ -64,7 +64,7 @@ function UITimerBarProgressItem.New(Text, TxtDictionary, TxtName, X, Y, Heading,
         Text = UIResText.New(Text or "N/A", 0, 0, 0.35, 255, 255, 255, 255, 0, "Right"),
         BackgroundProgressBar = UIResRectangle.New(0, 0, 150, 17, 255, 0, 0, 100),
         ProgressBar = UIResRectangle.New(0, 0, 0, 17, 255, 0, 0, 255),
-        Position = { X = 1540, Y = 1060 },
+        Position = { X = 1540-X, Y = 1060-Y },
     }
     return setmetatable(_UITimerBarProgressItem, UITimerBarProgressItem)
 end
