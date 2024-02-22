@@ -342,12 +342,14 @@ function interaction_putincar(ped)
 end
 
 function GetEmptySeat(vehicle)
-    -- for i = -1, GetVehicleMaxNumberOfPassengers(vehicle) - 1 do
-    --     if i ~= -1 and i ~= 0 and IsVehicleSeatFree(vehicle, i) then
-    --         return i
-    --     end
-    -- end
-    return math.random(2, 3)
+    if IsVehicleSeatFree(vehicle , 1 ) then 
+        return 1 
+    elseif IsVehicleSeatFree(vehicle , 2 ) then 
+        return 2 
+    elseif IsVehicleSeatFree(vehicle , 0 ) then
+        return 0  
+    end
+    return nil
 end
 
 function runAway(ped)
