@@ -23,10 +23,12 @@ for k, v in pairs(Config.PoliceStations) do
 
     Citizen.CreateThread(function()
         while true do
-            Wait(0)
+            local sleep = 1000
+            
             local pos = GetEntityCoords(PlayerPedId())
             local distance = #(pos - vector3(v.coords.x, v.coords.y, v.coords.z))
             if distance < 10 then
+                sleep = 0 
                 DrawMarker(v.jail.marker.type, v.jail.coords.x, v.jail.coords.y, v.jail.coords.z, 0, 0, 0, 0, 0, 0,
                     v.jail.marker.scale.x, v.jail.marker.scale.y, v.jail.marker.scale.z, v.jail.marker.color.r,
                     v.jail.marker.color.g, v.jail.marker.color.b, v.jail.marker.color.a, 0, 0, 0, 0)
@@ -42,6 +44,7 @@ for k, v in pairs(Config.PoliceStations) do
                     end
                 end
             end
+            Wait(sleep)
         end
     end) -- use ox lib zones maybe.. later
 end
