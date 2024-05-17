@@ -27,3 +27,6 @@ Planned Features:
 - Dispatch calls for Officers
 - F6 menu
 - more.. :)
+
+preview: 
+https://streamable.com/r0afb4
